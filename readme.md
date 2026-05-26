@@ -1,4 +1,4 @@
-````
+``
 # Complexity Ceiling Benchmark (CCB)
 
 **A depth-controlled diagnostic for sequential reasoning in large language models.**
@@ -85,7 +85,7 @@ complexity-ceiling-benchmark/
         ├── parser_validation.json
         ├── results_ablation.json
         └── results_prompt_sensitivity.json
-````
+``
 
 ---
 
