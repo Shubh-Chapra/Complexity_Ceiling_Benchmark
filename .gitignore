@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# API keys — never commit these
+.env
+.env.local
+*.env
+secrets.py
+
+# OS
+.DS_Store
+.DS_Store?
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Intermediate / scratch result files
+# (keep results_FINAL_* and combined_* but exclude raw run artifacts)
+results_main_*.json
+results_D*_*.json
+*_resumed*.json
+*_smart_resume*.json
+*.log.txt
+
+# Archives — data is stored as extracted JSON, not zips
+*.zip
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb

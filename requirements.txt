@@ -1,0 +1,16 @@
+# Complexity Ceiling Benchmark — Python dependencies
+# Install with: pip install -r requirements.txt
+# Tested on Python 3.10+
+
+# API client (OpenRouter uses the OpenAI-compatible SDK)
+openai>=1.14.0
+
+# Numerical / statistical
+numpy>=1.24.0
+scipy>=1.10.0
+statsmodels>=0.14.0
+
+# No other third-party dependencies.
+# All other imports (json, os, re, random, math, time,
+# pathlib, collections, copy, glob, sys, datetime)
+# are Python standard library.
