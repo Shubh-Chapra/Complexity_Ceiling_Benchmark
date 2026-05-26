@@ -1,4 +1,3 @@
-``
 # Complexity Ceiling Benchmark (CCB)
 
 **A depth-controlled diagnostic for sequential reasoning in large language models.**
@@ -210,9 +209,9 @@ Reasoning-specialized architectures (e.g. `o1/o3`, `DeepSeek-R1`) are currently 
 
 | Metric    | Description                                                   |
 | --------- | ------------------------------------------------------------- |
-| (p_d)     | Per-step retention parameter                                  |
-| (H_{0.5}) | Effective half-accuracy horizon                               |
-| (k^*)     | First divergence step                                         |
+| \(p_d\)     | Per-step retention parameter                                  |
+| \(H_{0.5}\) | Effective half-accuracy horizon                               |
+| \(k^*\)     | First divergence step                                         |
 | TFBC      | Correct final answer despite incorrect intermediate reasoning |
 
 ---
