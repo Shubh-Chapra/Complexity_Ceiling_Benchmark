@@ -1,11 +1,11 @@
-````markdown
+````
 # Complexity Ceiling Benchmark (CCB)
 
 **A depth-controlled diagnostic for sequential reasoning in large language models.**
 
-> *Paper:* **The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling**  
-> *Status:* Under review  
-> *Institution:* BITS Pilani, Pilani Campus
+ *Paper:* **The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling**  
+ *Status:* Under review  
+ *Institution:* BITS Pilani, Pilani Campus
 
 ---
 
