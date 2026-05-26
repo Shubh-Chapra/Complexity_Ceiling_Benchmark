@@ -3,7 +3,6 @@
 **A depth-controlled diagnostic for sequential reasoning in large language models.**
 
  *Paper:* **The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling**  
- *Status:* Under review  
  *Institution:* BITS Pilani, Pilani Campus
 
 ---
@@ -58,12 +57,14 @@ complexity-ceiling-benchmark/
 │
 ├── d1_alien_grid/
 │   ├── alien_grid_main.py
+│   ├── parser.py 
 │   ├── run_ablation.py
 │   └── results/
 │       ├── benchmark_main.json
 │       ├── combined_results.json
 │       ├── summary.json
 │       ├── parser_validation.json
+│       ├── results_ablation.json
 │       ├── compute_kappa.py
 │       └── compute_mcnemar.py
 │
