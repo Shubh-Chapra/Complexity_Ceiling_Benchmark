@@ -1,186 +1,270 @@
-```markdown
+````markdown
 # Complexity Ceiling Benchmark (CCB)
 
 **A depth-controlled diagnostic for sequential reasoning in large language models.**
 
-> *Paper:* [The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling](https://arxiv.org/abs/XXXX.XXXXX) — ICML 2026  
+> *Paper:* **The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling**  
+> *Status:* Under review  
 > *Institution:* BITS Pilani, Pilani Campus
 
 ---
 
-## Overview
+# Overview
 
-Standard reasoning benchmarks entangle semantic difficulty with reasoning depth, making it unclear *when* along a multi-step chain a model actually fails. CCB fixes all semantic parameters and varies only the number of required sequential reasoning steps **N** ($5 \rightarrow 50$) across three structurally distinct domains ($n=40$ independent trials per depth cell, each generated from a distinct random seed).
+Standard reasoning benchmarks often entangle semantic difficulty with reasoning depth, making it unclear *where* along a multi-step reasoning chain a model actually fails.
+
+The Complexity Ceiling Benchmark (CCB) isolates sequential reasoning depth by holding semantic parameters fixed while varying only the number of required reasoning steps:
+
+\[
+N \in \{5,10,\dots,50\}
+\]
+
+across three structurally distinct reasoning domains, with \(n=40\) independent trials per depth cell.
 
 | Domain | Type | Primary Failure Mode |
-|--------|------|----------------------|
-| **D1 — Alien Grid** | Grounded spatial state-tracking ($3\times3$ grid) | Per-step state retention decay compounding |
-| **D2 — Symbolic Tracking** | Abstract register/pointer chasing | Task constraint violations (illegal re-assignment) |
-| **D3 — Social Logic** | Transitive relational graph inference | Cascade error propagation across reachable nodes |
-
-### Key Findings
-
-- **Geometric Depth Decay:** Across well-behaved domains, accuracy fits a geometric decay model $P(\text{correct} \mid N) = p_d^N$ ($R^2 > 0.90$ on D1/D2), yielding a single interpretable per-step retention parameter $p_d$.
-- **Lucky-Guess Inflations:** Over the entire suite, **14.5% of all correct outputs** are verified Trace First Branch Correct (TFBC) events: the final answer is correct despite the intermediate reasoning traces diverging from ground truth. Rates reach 56%–62% on transitive relational tasks.
-- **Early-Chain Cascade Collapse:** All evaluated models suffer near-universal collapse to near-zero accuracy on D3 beyond depth $N=5$, independent of general capability tier (mean divergence step $k^* \in [2.88, 4.30]$).
-- **State Supervision Trade-offs:** Forcing intermediate state-tracking verbosity offers a $+10.0\text{ pp}$ accuracy uptick on D1 spatial tasks at $N=25$, but shifts the error taxonomy drastically—surfacing a 35.0% grid-integrity constraint failure profile. Conversely, it provides zero structural benefit on D3 graph paths ($p=1.0000$, $n=20$).
+|---|---|---|
+| **D1 — Alien Grid** | Spatial state tracking | Per-step retention decay |
+| **D2 — Symbolic Tracking** | Abstract symbolic memory | Constraint violations |
+| **D3 — Social Logic** | Transitive relational inference | Cascade error propagation |
 
 ---
 
-## Repository Structure
+# Key Findings
 
+- Accuracy follows a geometric depth-decay relationship:
 
-```
+\[
+P(\text{correct} \mid N)=p_d^N
+\]
 
+with \(R^2 > 0.90\) on D1/D2.
+
+- **14.5% of all correct outputs** are TFBC (“lucky-guess”) events: the final answer is correct despite divergence in intermediate reasoning traces.
+
+- All evaluated models exhibit sharp degradation toward near-zero accuracy on D3 beyond \(N>5\).
+
+- Preliminary verbosity ablations suggest that increased intermediate supervision may partially mitigate retention failures on D1 while simultaneously increasing structural constraint violations.
+
+---
+
+# Repository Structure
+
+```text
 complexity-ceiling-benchmark/
+│
 ├── README.md
 ├── requirements.txt
 ├── LICENSE
 ├── .gitignore
 │
 ├── d1_alien_grid/
-│   ├── alien_grid_main.py       # Core dataset generator, evaluator, and parser
-│   ├── run_ablation.py          # Dedicated script for D1 spatial verbosity tests
+│   ├── alien_grid_main.py
+│   ├── run_ablation.py
 │   └── results/
-│       ├── benchmark_main_20260425_041745.json         # Stationary evaluations (n=400)
-│       ├── summary_smart_resume_grid.txt               # Unified text summary tables
-│       ├── combined_smart_resume_grid.json             # Flat merged tracking database
-│       └── parser_validation_grid.json                 # Human validation sample set
+│       ├── benchmark_main.json
+│       ├── combined_results.json
+│       ├── summary.json
+│       ├── parser_validation.json
+│       ├── compute_kappa.py
+│       └── compute_mcnemar.py
 │
 ├── d2_symbolic_tracking/
-│   ├── symbolic_tracking_main.py  # Register-file tracking logic and parsing anchors
+│   ├── symbolic_tracking_main.py
 │   └── results/
-│       └── ... (Symmetrical footprint to D1)
+│       ├── benchmark_main.json
+│       ├── combined_results.json
+│       ├── summary.json
+│       └── parser_validation.json
 │
 └── d3_social_logic/
-├── social_logic_main.py     # Transitive graph engine + prompt sensitivity + graph ablations
-└── results/
-├── ... (Symmetrical footprint to D1)
-├── results_ablation_smart_resume_fixed.json    # D3 baseline intervention logs
-├── results_prompt_sens_d3.json                 # System prompt Var A/B/C metrics
-├── compute_kappa.py                             # Cohen's Kappa calculator
-└── compute_mcnemar.py                           # Contingency significance testing
-
-```
+    ├── social_logic_main.py
+    └── results/
+        ├── benchmark_main.json
+        ├── combined_results.json
+        ├── summary.json
+        ├── parser_validation.json
+        ├── results_ablation.json
+        └── results_prompt_sensitivity.json
+````
 
 ---
 
-## Installation
+# Installation
 
-### 1. Clone the repository
+## 1. Clone the repository
+
 ```bash
-git clone [https://github.com/Shubh-Chapra/Complexity_Ceiling_Benchmark.git](https://github.com/Shubh-Chapra/Complexity_Ceiling_Benchmark.git)
-cd Complexity_Ceiling_Benchmark
-
+git clone https://github.com/<username>/complexity-ceiling-benchmark.git
+cd complexity-ceiling-benchmark
 ```
 
-### 2. Install dependencies
+## 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
-
 ```
 
-### 3. Configure credentials
+## 3. Configure API credentials
 
 ```bash
 export OPENROUTER_API_KEY="sk-or-..."
-
 ```
 
-All models are accessed at strict temperature $T=0$ via the OpenRouter routing layer using the OpenAI-compatible Python SDK.
+All models are accessed through the OpenRouter API using deterministic decoding at temperature (T=0).
 
 ---
 
-## Running Evaluations
+# Running Evaluations
 
-Each domain script is fully self-contained. Running a master execution script automatically scans for partial data outputs, runs missing seeds, executes necessary retries, fits the decay models, and compiles text reports:
+## Domain 1 — Alien Grid
 
 ```bash
-# Evaluate Domain 1 — Alien Grid (Spatial State Tracking)
 python d1_alien_grid/alien_grid_main.py
+```
 
-# Evaluate Domain 2 — Symbolic Tracking (Abstract Register Management)
+## Domain 2 — Symbolic Tracking
+
+```bash
 python d2_symbolic_tracking/symbolic_tracking_main.py
+```
 
-# Evaluate Domain 3 — Social Logic & Integrated Interventions
+## Domain 3 — Social Logic
+
+```bash
 python d3_social_logic/social_logic_main.py
-
 ```
 
-### Reproducing Domain-Specific Ablations
+Each script:
+
+* generates benchmark instances,
+* evaluates all configured models,
+* computes summary statistics,
+* exports merged outputs and evaluation reports.
+
+---
+
+# Ablations
+
+## D1 Spatial Verbosity Ablation
 
 ```bash
-# Run the standalone Domain 1 Spatial Verbosity Ablation matrix
 python d1_alien_grid/run_ablation.py
-
 ```
 
-*(Note: Domain 3 Graph Prompt Sensitivity and Graph Verbosity Ablations are directly triggered within the execution sequence of `d3_social_logic/social_logic_main.py`)*
+This reproduces:
 
----
+* verbose intermediate-state supervision,
+* D1 constraint-failure analysis,
+* paired evaluation statistics.
 
-## Statistical Analysis
+## D3 Prompt Sensitivity + Verbosity Ablations
 
-To calculate inter-annotator reliability metrics ($\kappa$) or exact contingency significance partitions, pass the target evaluation file paths directly as terminal arguments:
+D3 ablations are integrated directly into:
 
 ```bash
-# Inter-Annotator Agreement (Cohen's Kappa)
-python d3_social_logic/results/compute_kappa.py d1_alien_grid/results/parser_validation_grid.json
-
-# Significance Testing (McNemar Contingency Table)
-python d3_social_logic/results/compute_mcnemar.py d3_social_logic/results/results_prompt_sens_d3.json
-
+python d3_social_logic/social_logic_main.py
 ```
+
+This includes:
+
+* standard vs verbose prompting,
+* prompt variants (Var A/B/C),
+* graph-state intervention experiments,
+* McNemar paired significance testing.
 
 ---
 
-## Models Evaluated
+# Statistical Analysis
 
-All baseline instances were evaluated under deterministic decoding at temperature $T = 0$.
+## Cohen's κ
 
-| Model Instance | OpenRouter Model Endpoint Identifier |
-| --- | --- |
-| Claude 3.7 Sonnet | `anthropic/claude-3.7-sonnet` |
-| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` |
-| DeepSeek Chat | `deepseek/deepseek-chat` |
-| GPT-4o-mini | `openai/gpt-4o-mini` |
+```bash
+python d1_alien_grid/results/compute_kappa.py
+```
+
+## McNemar Significance Test
+
+```bash
+python d1_alien_grid/results/compute_mcnemar.py
+```
+
+Repeat analogously for D2 and D3.
+
+---
+
+# Models Evaluated
+
+| Model                  | OpenRouter Endpoint                 |
+| ---------------------- | ----------------------------------- |
+| Claude 3.7 Sonnet      | `anthropic/claude-3.7-sonnet`       |
+| Gemini 2.0 Flash       | `google/gemini-2.0-flash-001`       |
+| DeepSeek Chat          | `deepseek/deepseek-chat`            |
+| GPT-4o-mini            | `openai/gpt-4o-mini`                |
 | LLaMA 3.3 70B Instruct | `meta-llama/llama-3.3-70b-instruct` |
 
-*Note: Reasoning-specialized architectures utilizing internal reinforcement scratchpads or test-time compute loops (`o1`/`o3`, `DeepSeek-R1`) are out of scope for this version due to API access limits at the time of initial manuscript submission.*
+Reasoning-specialized architectures (e.g. `o1/o3`, `DeepSeek-R1`) are currently out of scope for this release.
 
 ---
 
-## Metric Reference Taxonomy
+# Metrics
 
-* **$p_d$ (Per-Step State Retention):** Geometric performance decay parameter extracted using absolute joint maximum likelihood estimation (MLE) across all evaluated depths.
-* **$H_{0.5}$ (Effective Success Horizon):** The discrete step threshold matching an exactly bounded 50% target accuracy boundary: $\ln(0.5) / \ln(p_d)$.
-* **$k^*$ (First-Branch Mismatch Step):** The exact, deterministic position in the reasoning trace where model step output diverges for the first time from ground truth.
-* **TFBC (Trace First Branch Correct Rate):** Structural tracking event rate capturing context contamination where the final token block is correct despite faulty intermediate states.
+| Metric    | Description                                                   |
+| --------- | ------------------------------------------------------------- |
+| (p_d)     | Per-step retention parameter                                  |
+| (H_{0.5}) | Effective half-accuracy horizon                               |
+| (k^*)     | First divergence step                                         |
+| TFBC      | Correct final answer despite incorrect intermediate reasoning |
 
 ---
 
-## Citation
+# Reproducibility
+
+The repository includes:
+
+* deterministic benchmark generators,
+* fixed evaluation seeds,
+* parser validation datasets,
+* merged model outputs,
+* bootstrap confidence interval utilities,
+* inter-annotator agreement scripts.
+
+This enables exact reproduction of all reported benchmark statistics.
+
+---
+
+# Runtime Notes
+
+* Full benchmark execution requires API access.
+* Runtime and cost depend on provider-side latency.
+* Deep traces at high depths may require elevated token budgets.
+
+---
+
+# Known Limitations
+
+* The geometric decay model assumes approximately independent per-step failures.
+* D3 evaluations are limited to vanilla autoregressive inference.
+* The regex parser prioritises precision over recall.
+* Reasoning-specialized models are not currently evaluated.
+
+---
+
+# Citation
 
 ```bibtex
-@inproceedings{chapra2026complexity,
-  title     = {The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling},
-  author    = {Chapra, Shubh and Sinha, Yash and Kumar, Dhruv},
-  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year      = {2026},
-  series    = {PMLR 306},
-  publisher = {PMLR}
+@article{ccb2026,
+  title={The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling},
+  author={Anonymous},
+  year={2026}
 }
-
 ```
 
 ---
 
-## License
+# License
 
-* **Source Evaluation Code Engine:** [MIT License](https://www.google.com/search?q=LICENSE)
-* **Benchmark Data Inventories** (completions, static configuration seeds): [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+* Code: MIT License
+* Benchmark data and evaluation outputs: CC BY 4.0
 
 ```
-
 ```
