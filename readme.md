@@ -3,7 +3,9 @@
 **A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling.**
 
  *Paper:* **The Complexity Ceiling Benchmark: A Multi-Domain Evaluation of Sequential Reasoning Under Depth Scaling**
+ 
  *Status:* **Accepted at ICML CTB Workshop 2026**
+ 
  *Institution:* BITS Pilani, Pilani Campus
 
 ---
